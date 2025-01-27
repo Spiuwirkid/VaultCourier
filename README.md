@@ -73,6 +73,7 @@ Before installing VaultCourier, ensure you have the following installed:
    ```
    Your Chat ID: 987654321
    ```
+## Screenshots
 
 ![Chat ID](https://i.ibb.co.com/FhfK002/Screenshot-2025-01-27-141603.png)
 
