@@ -132,10 +132,11 @@ Output:
 [SUCCESS] File 'file.txt' has been successfully sent to Telegram.
 [SUCCESS] VaultCourier finished its operation.
 ```
-
 ## Screenshots
 
 ![Send File](https://i.ibb.co.com/d4bMD2Q/Screenshot-2025-01-27-144352.png)
+
+---
 
 ### **Send a Folder**
 ```bash
