@@ -74,7 +74,7 @@ Before installing VaultCourier, ensure you have the following installed:
    Your Chat ID: 987654321
    ```
 
-![Get Chat ID with UserInfoBot](https://dummyimage.com/600x300/000/fff&text=UserInfoBot+Chat+ID)
+![Chat ID](https://i.ibb.co.com/FhfK002/Screenshot-2025-01-27-141603.png)
 
 ---
 
