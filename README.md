@@ -54,7 +54,10 @@ Before installing VaultCourier, ensure you have the following installed:
    123456:ABCdefGHIjklMNOpqrSTUvwxYZ
    ```
 
-![Get Chat ID with UserInfoBot](https://i.ibb.co.com/XtzdVf5/Screenshot-2025-01-27-135539.png)
+## Screenshots
+
+![App Screenshot](https://i.ibb.co.com/XtzdVf5/Screenshot-2025-01-27-135539.png)
+
 
 ---
 
