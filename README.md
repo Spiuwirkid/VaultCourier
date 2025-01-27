@@ -184,5 +184,9 @@ This project is licensed under the MIT License. See the [LICENSE](LICENSE) file 
 
 ---
 
+## Screenshots
+
+![App Screenshot](https://i.pinimg.com/736x/da/cd/cd/dacdcd6aa270d6ca47c195b7325fc9b5.jpg)
+
 Made with ❤️ by **Spiuwirkid**
 
