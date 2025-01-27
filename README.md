@@ -227,9 +227,9 @@ This project is licensed under the MIT License. See the [LICENSE](LICENSE) file 
 ---
 
 ## **Connect with Me** 🌐
-- **GitHub**: [yourusername](https://github.com/yourusername)
-- **Twitter**: [@yourhandle](https://twitter.com/yourhandle)
-- **LinkedIn**: [Your Name](https://linkedin.com/in/yourprofile)
+- **GitHub**: [spiuwirkid](https://github.com/spiuwirkid)
+- **Instagram**: [@ddavayuste](https://instagram.com/ddavayuste_)
+- **LinkedIn**: [Dava Yuste](https://www.linkedin.com/in/dava-yuste-5b45972a6/)
 
 ---
 
