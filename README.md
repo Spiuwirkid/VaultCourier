@@ -233,6 +233,13 @@ This project is licensed under the MIT License. See the [LICENSE](LICENSE) file 
 - **LinkedIn**: [Your Name](https://linkedin.com/in/yourprofile)
 
 ---
+![GitHub Repo Stars](https://img.shields.io/github/stars/Spiuwirkid/VaultCourier?style=social)
+![GitHub Forks](https://img.shields.io/github/forks/Spiuwirkid/VaultCourier?style=social)
+![GitHub Issues](https://img.shields.io/github/issues/Spiuwirkid/VaultCourier)
+![GitHub License](https://img.shields.io/github/license/Spiuwirkid/VaultCourier)
+![GitHub Last Commit](https://img.shields.io/github/last-commit/Spiuwirkid/VaultCourier)
+![GitHub Release](https://img.shields.io/github/v/release/Spiuwirkid/VaultCourier)
+
 
 Made with ❤️ by **Spiuwirkid**
 
