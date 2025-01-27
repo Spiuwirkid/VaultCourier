@@ -54,7 +54,7 @@ Before installing VaultCourier, ensure you have the following installed:
    123456:ABCdefGHIjklMNOpqrSTUvwxYZ
    ```
 
-![Create Bot with BotFather](https://i.ibb.co.com/hmk1m1d/Screenshot-2025-01-27-135539.png)
+![Get Chat ID with UserInfoBot](https://i.ibb.co.com/XtzdVf5/Screenshot-2025-01-27-135539.png)
 
 ---
 
