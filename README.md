@@ -36,6 +36,45 @@ Before installing VaultCourier, ensure you have the following installed:
 
 ---
 
+## **How to Create a Telegram Bot and Get Chat ID** 🔧
+
+### **Step 1: Create a Telegram Bot**
+1. Open Telegram and search for **@BotFather**.
+2. Start a chat with BotFather and send the command:
+   ```
+   /newbot
+   ```
+3. Follow the instructions to:
+   - Give your bot a name (e.g., `VaultCourierBot`).
+   - Create a unique username for the bot (e.g., `VaultCourier_Bot`).
+4. Once done, BotFather will provide you with a **Bot Token**. Save this token; you will need it later.
+
+   **Example:**
+   ```
+   123456:ABCdefGHIjklMNOpqrSTUvwxYZ
+   ```
+
+![Create Bot with BotFather](https://dummyimage.com/600x300/000/fff&text=BotFather+Setup)
+
+---
+
+### **Step 2: Get Your Chat ID**
+1. Search for **@userinfobot** on Telegram and start a chat.
+2. Send the command:
+   ```
+   /start
+   ```
+3. The bot will reply with your **Chat ID**.
+
+   **Example Output:**
+   ```
+   Your Chat ID: 987654321
+   ```
+
+![Get Chat ID with UserInfoBot](https://dummyimage.com/600x300/000/fff&text=UserInfoBot+Chat+ID)
+
+---
+
 ## **Installation** 🛠️
 
 Follow these simple steps to install **VaultCourier** and get it up and running in no time:
@@ -57,6 +96,8 @@ chmod +x vaultcourier.sh
 # Run the installation script
 ./vaultcourier.sh
 ```
+
+![Run Installer](https://dummyimage.com/600x300/000/fff&text=Run+Installer)
 
 ### **What the Installer Does** 🧐
 1. Installs all required Python dependencies.
@@ -91,6 +132,8 @@ Output:
 [SUCCESS] VaultCourier finished its operation.
 ```
 
+![Send File](https://dummyimage.com/600x300/000/fff&text=Send+File+Example)
+
 ### **Send a Folder**
 ```bash
 vc -d <folder_path>
@@ -108,6 +151,8 @@ Output:
 [SUCCESS] Folder '/path/to/folder' has been successfully sent to Telegram.
 [SUCCESS] VaultCourier finished its operation.
 ```
+
+![Send Folder](https://dummyimage.com/600x300/000/fff&text=Send+Folder+Example)
 
 ---
 
@@ -183,10 +228,6 @@ This project is licensed under the MIT License. See the [LICENSE](LICENSE) file 
 - **LinkedIn**: [Your Name](https://linkedin.com/in/yourprofile)
 
 ---
-
-## Screenshots
-
-![App Screenshot](https://i.pinimg.com/736x/da/cd/cd/dacdcd6aa270d6ca47c195b7325fc9b5.jpg)
 
 Made with ❤️ by **Spiuwirkid**
 
