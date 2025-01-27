@@ -4,7 +4,6 @@ import requests
 import shutil
 from datetime import datetime
 
-# Bot Telegram credentials (from environment variables)
 BOT_TOKEN = os.getenv("TELEGRAM_BOT_TOKEN")
 CHAT_ID = os.getenv("TELEGRAM_CHAT_ID")
 
@@ -12,13 +11,11 @@ if not BOT_TOKEN or not CHAT_ID:
     print("\033[91m[ERROR]\033[0m TELEGRAM_BOT_TOKEN or TELEGRAM_CHAT_ID is missing. Please set it in your environment variables.")
     sys.exit(1)
 
-# ANSI color codes
-INFO_COLOR = "\033[94m"    # Blue
-SUCCESS_COLOR = "\033[92m" # Green
-ERROR_COLOR = "\033[91m"   # Red
-RESET_COLOR = "\033[0m"    # Reset to default
+INFO_COLOR = "\033[94m"    
+SUCCESS_COLOR = "\033[92m" 
+ERROR_COLOR = "\033[91m"   
+RESET_COLOR = "\033[0m"   
 
-# Function to send a message to Telegram
 def send_telegram_message(message):
     url = f"https://api.telegram.org/bot{BOT_TOKEN}/sendMessage"
     payload = {"chat_id": CHAT_ID, "text": message, "parse_mode": "HTML"}
@@ -31,18 +28,15 @@ def send_telegram_message(message):
         return False
     return True
 
-# Function to send a file to Telegram
 def send_file_to_telegram(file_path):
     url = f"https://api.telegram.org/bot{BOT_TOKEN}/sendDocument"
     try:
         file_name = os.path.basename(file_path)
         message = f"Here is the file you requested:\n\n<code>{file_name}</code>"
         
-        # Send message to Telegram
         if send_telegram_message(message):
             print(f"{INFO_COLOR}[INFO]{RESET_COLOR} Message sent to Telegram: 'Here is the file you requested: {file_name}'")
 
-        # Send file
         with open(file_path, "rb") as file:
             files = {"document": file}
             payload = {"chat_id": CHAT_ID}
@@ -58,7 +52,6 @@ def send_file_to_telegram(file_path):
     return False
 
 
-# Function to zip a folder with the same name as the folder
 def zip_folder(folder_path):
     try:
         folder_name = os.path.basename(os.path.normpath(folder_path))  # Get folder name
@@ -71,13 +64,12 @@ def zip_folder(folder_path):
         print(f"{ERROR_COLOR}[ERROR]{RESET_COLOR} Failed to zip folder: {e}")
         return None
 
-# Main function to send file/folder
 def main():
     if len(sys.argv) < 3:
         print(f"""
 {INFO_COLOR}Usage:{RESET_COLOR}
-  vc -f <file_path>    # Send a file
-  vc -d <folder_path>  # Send a folder (auto-zipped)
+  vc -f <file_path> 
+  vc -d <folder_path> 
 """)
         sys.exit(1)
 
@@ -105,7 +97,6 @@ def main():
         print(f"{ERROR_COLOR}[ERROR]{RESET_COLOR} Invalid option. Use -f for file or -d for folder.")
         sys.exit(1)
 
-# Run the script with KeyboardInterrupt handling
 if __name__ == "__main__":
     try:
         print(f"{INFO_COLOR}[INFO]{RESET_COLOR} VaultCourier is starting...")
