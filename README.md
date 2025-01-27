@@ -101,8 +101,6 @@ chmod +x vaultcourier.sh
 ./vaultcourier.sh
 ```
 
-![Run Installer](https://dummyimage.com/600x300/000/fff&text=Run+Installer)
-
 ### **What the Installer Does** 🧐
 1. Installs all required Python dependencies.
 2. Configures your Telegram Bot Token and Chat ID.
@@ -136,7 +134,9 @@ Output:
 [SUCCESS] VaultCourier finished its operation.
 ```
 
-![Send File](https://dummyimage.com/600x300/000/fff&text=Send+File+Example)
+## Screenshots
+
+![Send File](https://i.ibb.co.com/d4bMD2Q/Screenshot-2025-01-27-144352.png)
 
 ### **Send a Folder**
 ```bash
@@ -155,8 +155,9 @@ Output:
 [SUCCESS] Folder '/path/to/folder' has been successfully sent to Telegram.
 [SUCCESS] VaultCourier finished its operation.
 ```
+## Screenshots
 
-![Send Folder](https://dummyimage.com/600x300/000/fff&text=Send+Folder+Example)
+![Send Folder](https://i.ibb.co.com/89HGbNR/Screenshot-2025-01-27-144433.png)
 
 ---
 
