@@ -84,10 +84,10 @@ Follow these simple steps to install **VaultCourier** and get it up and running 
 ### **Step 1: Clone the Repository**
 ```bash
 # Clone the repository
-git clone https://github.com/yourusername/vaultcourier.git
+git clone https://github.com/Spiuwirkid/VaultCourier.git
 
 # Navigate into the folder
-cd vaultcourier
+cd VaultCourier
 ```
 
 ### **Step 2: Run the Installer**
