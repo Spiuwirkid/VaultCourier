@@ -240,7 +240,11 @@ vaultcourier/
 - Ensure the alias was added during installation.
 
 ### **3. Can I send large files?**
+<<<<<<< HEAD
 - No, This script supports file up to **50MB**, cause larger files may take longer to upload.
+=======
+- Yes, Telegram supports files up to **2GB**, but larger files may take longer to upload.
+>>>>>>> 9a68f633127ab80b4caa252eca34cfc22131a909
 
 ---
 
