@@ -1,113 +1,178 @@
 import os
 import sys
-import requests
 import shutil
-from datetime import datetime
+import logging
+import argparse
+from pathlib import Path
+from typing import Optional
+import requests
+from tqdm import tqdm
+from tenacity import retry, stop_after_attempt, wait_exponential, before_log
+from dotenv import load_dotenv
+from colorama import init, Fore
+import zipfile
 
+init(autoreset=True)
+logging.basicConfig(
+    level=logging.INFO,
+    format=f"{Fore.CYAN}%(asctime)s{Fore.RESET} [%(levelname)s] %(message)s",
+    handlers=[logging.FileHandler("vaultcourier.log"), logging.StreamHandler()],
+)
+logger = logging.getLogger(__name__)
+
+MAX_FILE_SIZE = 50 * 1024 * 1024  # 50MB Telegram limit
+BOT_TOKEN_REGEX = r"^\d+:[a-zA-Z0-9_-]{35}$"  # Token validation regex
+
+load_dotenv()
 BOT_TOKEN = os.getenv("TELEGRAM_BOT_TOKEN")
 CHAT_ID = os.getenv("TELEGRAM_CHAT_ID")
 
 if not BOT_TOKEN or not CHAT_ID:
-    print("\033[91m[ERROR]\033[0m TELEGRAM_BOT_TOKEN or TELEGRAM_CHAT_ID is missing. Please set it in your environment variables.")
+    logger.error("TELEGRAM_BOT_TOKEN or TELEGRAM_CHAT_ID not configured in .env")
     sys.exit(1)
 
-INFO_COLOR = "\033[94m"
-SUCCESS_COLOR = "\033[92m"
-ERROR_COLOR = "\033[91m"
-RESET_COLOR = "\033[0m"
+if not (BOT_TOKEN and len(BOT_TOKEN.split(":")) == 2):
+    logger.error("Invalid TELEGRAM_BOT_TOKEN format")
+    sys.exit(1)
 
-def send_telegram_message(message):
-    url = f"https://api.telegram.org/bot{BOT_TOKEN}/sendMessage"
-    payload = {"chat_id": CHAT_ID, "text": message, "parse_mode": "HTML"}
-    try:
-        response = requests.post(url, json=payload, timeout=30)
-        response.raise_for_status()
-        print(f"{INFO_COLOR}[INFO]{RESET_COLOR} Message sent to Telegram: '{message}'")
-    except requests.exceptions.RequestException as e:
-        print(f"{ERROR_COLOR}[ERROR]{RESET_COLOR} Failed to send message to Telegram: {e}")
-        return False
-    return True
+class TelegramClient:
+    def __init__(self):
+        self.base_url = f"https://api.telegram.org/bot{BOT_TOKEN}"
+        self.session = requests.Session()
 
-def send_file_to_telegram(file_path):
-    url = f"https://api.telegram.org/bot{BOT_TOKEN}/sendDocument"
-    try:
-        file_name = os.path.basename(file_path)
-        
-        # Send text message first
-        message = f"Here is the file you requested:\n\n<code>{file_name}</code>"
-        if not send_telegram_message(message):
-            print(f"{ERROR_COLOR}[ERROR]{RESET_COLOR} Failed to send initial message.")
+    @retry(stop=stop_after_attempt(3), wait=wait_exponential(multiplier=1, min=2, max=10), before=before_log(logger, logging.DEBUG))
+    def send_message(self, message: str) -> bool:
+        """Send a message to the configured chat."""
+        url = f"{self.base_url}/sendMessage"
+        payload = {"chat_id": CHAT_ID, "text": message, "parse_mode": "HTML"}
+        try:
+            response = self.session.post(url, json=payload, timeout=15)
+            response.raise_for_status()
+            logger.info(f"Message sent to Telegram: '{message[:50]}...'")
+            return True
+        except requests.RequestException as e:
+            logger.error(f"Failed to send message: {e}")
             return False
 
-        print(f"{INFO_COLOR}[INFO]{RESET_COLOR} File '{file_name}' is being sent to Telegram...")
-        with open(file_path, "rb") as file:
-            files = {"document": file}
-            payload = {"chat_id": CHAT_ID}
-            response = requests.post(url, data=payload, files=files, timeout=60)
-            response.raise_for_status()
+    def send_file(self, file_path: Path, message: Optional[str] = None) -> bool:
+        """Send a file to the Telegram chat."""
+        if not file_path.exists():
+            logger.error(f"File not found: {file_path}")
+            self.report_error(f"File not found: {file_path}")
+            return False
 
-        print(f"{SUCCESS_COLOR}[SUCCESS]{RESET_COLOR} File '{file_name}' has been successfully sent to Telegram.")
-        return True
-    except requests.exceptions.RequestException as e:
-        print(f"{ERROR_COLOR}[ERROR]{RESET_COLOR} Failed to send file to Telegram: {e}")
-    except FileNotFoundError:
-        print(f"{ERROR_COLOR}[ERROR]{RESET_COLOR} File '{file_path}' does not exist.")
-    return False
+        logger.info(f"File '{file_path.name}' is being sent to Telegram...")
+        if file_path.stat().st_size > MAX_FILE_SIZE:
+            logger.error(f"File size exceeds limit: {self._human_size(file_path.stat().st_size)} > 50MB")
+            self.report_error(f"File size exceeds limit: {self._human_size(file_path.stat().st_size)} > 50MB")
+            return False
 
-def zip_folder(folder_path):
+        preview_msg = message or f"📁 File: {file_path.name}"
+        if not self.send_message(f"{preview_msg}\n\n<code>Size: {self._human_size(file_path.stat().st_size)}</code>"):
+            logger.error("Failed to send preview message. Aborting file upload.")
+            return False
+
+        try:
+            with file_path.open('rb') as f:
+                url = f"{self.base_url}/sendDocument"
+                files = {"document": (file_path.name, f)}
+                data = {"chat_id": CHAT_ID}
+
+                with tqdm(total=file_path.stat().st_size, unit="B", unit_scale=True, desc=f"Uploading {file_path.name}") as pbar:
+                    response = self.session.post(url, files=files, data=data, timeout=60)
+                    response.raise_for_status()
+                    pbar.update(file_path.stat().st_size)
+
+            logger.info(f"Successfully sent file: {file_path.name}")
+            logger.info(f"Successfully sent: {file_path.name}")
+            return True
+        except requests.RequestException as e:
+            logger.error(f"Failed to upload file: {e}")
+            self.report_error(f"Failed to upload file: {file_path.name} - {e}")
+            return False
+
+    def report_error(self, error_message: str):
+        """Report errors to Telegram chat."""
+        error_msg = f"⚠️ <b>Error:</b> {error_message}"
+        self.send_message(error_msg)
+
+    @staticmethod
+    def _human_size(size: int) -> str:
+        """Convert file size to human-readable format."""
+        units = ['B', 'KB', 'MB', 'GB']
+        index = 0
+        while size >= 1024 and index < len(units) - 1:
+            size /= 1024
+            index += 1
+        return f"{size:.2f} {units[index]}"
+
+def zip_folder(folder_path: Path) -> Optional[Path]:
+    """Compress folder with progress tracking."""
+    if not folder_path.exists() or not folder_path.is_dir():
+        logger.error(f"Folder not found or invalid: {folder_path}")
+        client.report_error(f"Folder not found or invalid: {folder_path}")
+        return None
+
     try:
-        folder_name = os.path.basename(os.path.normpath(folder_path))
-        zip_name = f"{folder_name}.zip"
-        shutil.make_archive(folder_name, "zip", folder_path)
-        zip_path = f"{folder_name}.zip"
-        print(f"{INFO_COLOR}[INFO]{RESET_COLOR} Folder '{folder_path}' has been zipped into '{zip_path}'.")
+        logger.info(f"VaultCourier is starting...")
+        zip_path = folder_path.with_suffix('.zip')
+        total_size = sum(f.stat().st_size for f in folder_path.rglob('*') if f.is_file())
+
+        with zipfile.ZipFile(zip_path, 'w', zipfile.ZIP_DEFLATED) as zipf, tqdm(
+            total=total_size, unit="B", unit_scale=True, desc=f"Zipping {folder_path.name}"
+        ) as pbar:
+            for root, _, files in os.walk(folder_path):
+                for file in files:
+                    file_path = Path(root) / file
+                    arcname = file_path.relative_to(folder_path.parent)
+                    zipf.write(file_path, arcname)
+                    pbar.update(file_path.stat().st_size)
+
+        logger.info(f"Folder '{folder_path}' has been zipped into '{zip_path.name}'.")
         return zip_path
     except Exception as e:
-        print(f"{ERROR_COLOR}[ERROR]{RESET_COLOR} Failed to zip folder: {e}")
+        logger.error(f"Failed to zip folder: {e}")
+        client.report_error(f"Failed to zip folder: {folder_path.name} - {e}")
         return None
 
 def main():
-    if len(sys.argv) < 3:
-        print(f"""
-{INFO_COLOR}Usage:{RESET_COLOR}
-  vc -f <file_path>    : Send a file to Telegram.
-  vc -d <folder_path>  : Send a folder to Telegram (auto-zipped).
-""")
-        sys.exit(1)
+    parser = argparse.ArgumentParser(
+        description="VaultCourier - Secure File Transfer via Telegram",
+        epilog="Example: python vc.py --file example1.txt example2.jpg --message 'Here are the files'"
+    )
+    parser.add_argument("-f", "--file", nargs="+", help="File(s) to send (support multiple files)")
+    parser.add_argument("-d", "--directory", help="Directory to compress and send")
+    parser.add_argument("-m", "--message", help="Custom message for file upload")
 
-    option = sys.argv[1]
-    path = sys.argv[2]
+    args = parser.parse_args()
+    client = TelegramClient()
 
-    print(f"{INFO_COLOR}[INFO]{RESET_COLOR} VaultCourier is starting...")
-
-    if option == "-f":
-        # Send file
-        if os.path.isfile(path):
-            if not send_file_to_telegram(path):
-                print(f"{ERROR_COLOR}[ERROR]{RESET_COLOR} Failed to send file.")
-        else:
-            print(f"{ERROR_COLOR}[ERROR]{RESET_COLOR} File '{path}' does not exist.")
-    elif option == "-d":
-        # Send folder (auto-zip)
-        if os.path.isdir(path):
-            zip_path = zip_folder(path)
-            if zip_path and send_file_to_telegram(zip_path):
-                print(f"{SUCCESS_COLOR}[SUCCESS]{RESET_COLOR} Folder '{path}' has been successfully sent to Telegram.")
+    try:
+        if args.file:
+            for file_path in args.file:
+                path = Path(file_path)
+                if not path.exists():
+                    logger.error(f"File not found: {path}")
+                    client.report_error(f"File not found: {path}")
+                elif client.send_file(path, args.message):
+                    logger.info(f"Successfully sent: {path.name}")
+        elif args.directory:
+            dir_path = Path(args.directory)
+            if not dir_path.exists():
+                logger.error(f"Folder not found: {dir_path}")
+                client.report_error(f"Folder not found: {dir_path}")
             else:
-                print(f"{ERROR_COLOR}[ERROR]{RESET_COLOR} Failed to send folder.")
-        else:
-            print(f"{ERROR_COLOR}[ERROR]{RESET_COLOR} Folder '{path}' does not exist.")
-    else:
-        print(f"{ERROR_COLOR}[ERROR]{RESET_COLOR} Invalid option. Use -f for file or -d for folder.")
+                zip_path = zip_folder(dir_path)
+                if zip_path and client.send_file(zip_path, args.message):
+                    logger.info(f"Successfully sent directory as ZIP: {zip_path.name}")
+                    zip_path.unlink() 
+                    logger.info(f"VaultCourier finished its operation.")
+    except KeyboardInterrupt:
+        logger.info("Operation cancelled by user")
+    except Exception as e:
+        logger.error(f"Unexpected error: {e}")
+        client.report_error(f"Unexpected error: {e}")
         sys.exit(1)
-
-    print(f"{SUCCESS_COLOR}[SUCCESS]{RESET_COLOR} VaultCourier finished its operation.")
 
 if __name__ == "__main__":
-    try:
-        main()
-    except KeyboardInterrupt:
-        print(f"\n{ERROR_COLOR}[CANCELLED]{RESET_COLOR} Operation cancelled by user.")
-        sys.exit(0)
-    except Exception as e:
-        print(f"{ERROR_COLOR}[ERROR]{RESET_COLOR} An error occurred: {e}")
+    main()

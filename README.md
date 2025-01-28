@@ -4,10 +4,10 @@ Welcome to **VaultCourier**, your ultimate solution for securely sending files a
 ---
 
 ## **Features** ✨
-- **Send Files:** Transfer any file to Telegram easily.
+- **Send Files:** Transfer any file to Telegram easily, including multiple files at once.
 - **Send Folders:** Automatically compress folders into `.zip` and send them seamlessly.
 - **User-Friendly:** Minimal setup with one command installation.
-- **Customizable:** Easily configure Telegram Bot Token and Chat ID.
+- **Customizable:** Easily configure Telegram Bot Token and Chat ID using `.env` file.
 - **Lightweight:** Designed for performance and simplicity.
 
 ---
@@ -57,7 +57,6 @@ Before installing VaultCourier, ensure you have the following installed:
 
 ![App Screenshot](https://i.ibb.co.com/XtzdVf5/Screenshot-2025-01-27-135539.png)
 
-
 ---
 
 ### **Step 2: Get Your Chat ID**
@@ -102,7 +101,7 @@ chmod +x vaultcourier.sh
 
 ### **What the Installer Does** 🧐
 1. Installs all required Python dependencies.
-2. Configures your Telegram Bot Token and Chat ID.
+2. Configures your Telegram Bot Token and Chat ID using a `.env` file.
 3. Sets up the `vc` alias for easier usage.
 4. Adds everything to your shell profile (e.g., `~/.bashrc` or `~/.zshrc`).
 
@@ -129,12 +128,36 @@ Output:
 ```
 [INFO] VaultCourier is starting...
 [INFO] File 'file.txt' is being sent to Telegram...
+[INFO] Message sent to Telegram: '📁 File: file.txt\n\n<code>Size: 1.17 KB</code>'
+Uploading file.txt: 100%|████████████████████████████████████████████████████████████| 1.17k/1.17k [00:00<00:00, 1.62kB/s]
 [SUCCESS] File 'file.txt' has been successfully sent to Telegram.
 [SUCCESS] VaultCourier finished its operation.
 ```
 ## Screenshots
 
 ![Send File](https://i.ibb.co.com/d4bMD2Q/Screenshot-2025-01-27-144352.png)
+
+---
+
+### **Send Multiple Files**
+```bash
+vc -f <file1> <file2> <file3>
+```
+#### Example:
+```bash
+vc -f file1.txt file2.pdf image.jpg
+```
+Output:
+```
+[INFO] VaultCourier is starting...
+[INFO] File 'file1.txt' is being sent to Telegram...
+[SUCCESS] File 'file1.txt' has been successfully sent to Telegram.
+[INFO] File 'file2.pdf' is being sent to Telegram...
+[SUCCESS] File 'file2.pdf' has been successfully sent to Telegram.
+[INFO] File 'image.jpg' is being sent to Telegram...
+[SUCCESS] File 'image.jpg' has been successfully sent to Telegram.
+[SUCCESS] VaultCourier finished its operation.
+```
 
 ---
 
@@ -150,7 +173,9 @@ Output:
 ```
 [INFO] VaultCourier is starting...
 [INFO] Folder '/path/to/folder' has been zipped into 'folder.zip'.
-[INFO] Message sent to Telegram: 'Here is the file you requested: folder.zip'
+[INFO] Message sent to Telegram: '📁 File: folder.zip\n\n<code>Size: 5.67 KB</code>'
+Zipping folder: 100%|████████████████████████████████████████████████████████████████| 38.8k/38.8k [00:00<00:00, 12.7MB/s]
+Uploading folder.zip: 100%|███████████████████████████████████████████████████████████| 5.81k/5.81k [00:00<00:00, 6.04kB/s]
 [SUCCESS] File 'folder.zip' has been successfully sent to Telegram.
 [SUCCESS] Folder '/path/to/folder' has been successfully sent to Telegram.
 [SUCCESS] VaultCourier finished its operation.
@@ -162,29 +187,30 @@ Output:
 ---
 
 ## **Configuration** ⚙️
-You can always update your Telegram Bot Token or Chat ID by editing your shell profile:
+VaultCourier uses a `.env` file to store configuration securely. To update your Telegram Bot Token or Chat ID:
 
-1. Open your shell profile:
+1. Open the `.env` file in the root of the repository:
    ```bash
-   nano ~/.bashrc  # or ~/.zshrc for Zsh
+   nano .env
    ```
 
-2. Add or update these lines:
-   ```bash
-   export TELEGRAM_BOT_TOKEN="your_bot_token"
-   export TELEGRAM_CHAT_ID="your_chat_id"
+2. Update the following lines:
+   ```env
+   TELEGRAM_BOT_TOKEN="your_bot_token"
+   TELEGRAM_CHAT_ID="your_chat_id"
    ```
 
-3. Save and reload your profile:
-   ```bash
-   source ~/.bashrc
-   ```
+3. Save and close the file. No need to reload your terminal.
 
 ---
 
 ## **Dependencies** 📦
 VaultCourier uses the following Python libraries:
 - `requests` (for making HTTP requests to Telegram API)
+- `tqdm` (for displaying progress bars)
+- `tenacity` (for retry logic)
+- `python-dotenv` (for managing environment variables)
+- `colorama` (for colored terminal output)
 
 All dependencies are automatically installed by the installer via `pip`.
 
@@ -198,6 +224,7 @@ vaultcourier/
 ├── vc/
 │   ├── vaultcourier.py   # Main Python script
 │   └── requirements.txt  # Dependencies
+├── .env                  # Configuration file for bot token and chat ID
 ```
 
 ---
@@ -213,7 +240,7 @@ vaultcourier/
 - Ensure the alias was added during installation.
 
 ### **3. Can I send large files?**
-- Yes, Telegram supports files up to **2GB**.
+- No, This script supports file up to **50MB**, cause larger files may take longer to upload.
 
 ---
 
@@ -235,4 +262,3 @@ This project is licensed under the MIT License. See the [LICENSE](LICENSE) file 
 ---
 
 Made with ❤️ by **Spiuwirkid**
-
