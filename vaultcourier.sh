@@ -1,7 +1,5 @@
 #!/bin/bash
 
-# VaultCourier Installation Script
-
 echo -e "\033[94m[INFO]\033[0m Starting VaultCourier installation..."
 sleep 1
 
