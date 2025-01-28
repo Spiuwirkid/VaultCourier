@@ -7,7 +7,7 @@ Welcome to **VaultCourier**, your ultimate solution for securely sending files a
 - **Send Files:** Transfer any file to Telegram easily, including multiple files at once.
 - **Send Folders:** Automatically compress folders into `.zip` and send them seamlessly.
 - **User-Friendly:** Minimal setup with one command installation.
-- **Customizable:** Easily configure Telegram Bot Token and Chat ID.
+- **Customizable:** Easily configure Telegram Bot Token and Chat ID using `.env` file.
 - **Lightweight:** Designed for performance and simplicity.
 
 ---
@@ -101,7 +101,7 @@ chmod +x vaultcourier.sh
 
 ### **What the Installer Does** 🧐
 1. Installs all required Python dependencies.
-2. Configures your Telegram Bot Token and Chat ID.
+2. Configures your Telegram Bot Token and Chat ID using a `.env` file.
 3. Sets up the `vc` alias for easier usage.
 4. Adds everything to your shell profile (e.g., `~/.bashrc` or `~/.zshrc`).
 
@@ -128,6 +128,8 @@ Output:
 ```
 [INFO] VaultCourier is starting...
 [INFO] File 'file.txt' is being sent to Telegram...
+[INFO] Message sent to Telegram: '📁 File: file.txt\n\n<code>Size: 1.17 KB</code>'
+Uploading file.txt: 100%|████████████████████████████████████████████████████████████| 1.17k/1.17k [00:00<00:00, 1.62kB/s]
 [SUCCESS] File 'file.txt' has been successfully sent to Telegram.
 [SUCCESS] VaultCourier finished its operation.
 ```
@@ -171,7 +173,9 @@ Output:
 ```
 [INFO] VaultCourier is starting...
 [INFO] Folder '/path/to/folder' has been zipped into 'folder.zip'.
-[INFO] Message sent to Telegram: 'Here is the file you requested: folder.zip'
+[INFO] Message sent to Telegram: '📁 File: folder.zip\n\n<code>Size: 5.67 KB</code>'
+Zipping folder: 100%|████████████████████████████████████████████████████████████████| 38.8k/38.8k [00:00<00:00, 12.7MB/s]
+Uploading folder.zip: 100%|███████████████████████████████████████████████████████████| 5.81k/5.81k [00:00<00:00, 6.04kB/s]
 [SUCCESS] File 'folder.zip' has been successfully sent to Telegram.
 [SUCCESS] Folder '/path/to/folder' has been successfully sent to Telegram.
 [SUCCESS] VaultCourier finished its operation.
@@ -183,23 +187,20 @@ Output:
 ---
 
 ## **Configuration** ⚙️
-You can always update your Telegram Bot Token or Chat ID by editing your shell profile:
+VaultCourier uses a `.env` file to store configuration securely. To update your Telegram Bot Token or Chat ID:
 
-1. Open your shell profile:
+1. Open the `.env` file in the root of the repository:
    ```bash
-   nano ~/.bashrc  # or ~/.zshrc for Zsh
+   nano .env
    ```
 
-2. Add or update these lines:
-   ```bash
-   export TELEGRAM_BOT_TOKEN="your_bot_token"
-   export TELEGRAM_CHAT_ID="your_chat_id"
+2. Update the following lines:
+   ```env
+   TELEGRAM_BOT_TOKEN="your_bot_token"
+   TELEGRAM_CHAT_ID="your_chat_id"
    ```
 
-3. Save and reload your profile:
-   ```bash
-   source ~/.bashrc
-   ```
+3. Save and close the file. No need to reload your terminal.
 
 ---
 
@@ -209,53 +210,6 @@ VaultCourier uses the following Python libraries:
 - `tqdm` (for displaying progress bars)
 - `tenacity` (for retry logic)
 - `python-dotenv` (for managing environment variables)
+- `colorama` (for colored terminal output)
 
-All dependencies are automatically installed by the installer via `pip`.
-
----
-
-## **File Structure** 🗂️
-Here’s what the repository looks like:
-```
-vaultcourier/
-├── vaultcourier.sh       # Installer script
-├── vc/
-│   ├── vaultcourier.py   # Main Python script
-│   └── requirements.txt  # Dependencies
-```
-
----
-
-## **FAQs** ❓
-
-### **1. What is Telegram Bot Token and Chat ID?**
-- **Telegram Bot Token**: A unique key provided by @BotFather to authenticate your bot.
-- **Chat ID**: The ID of your chat where the bot will send files. You can get it by messaging @userinfobot.
-
-### **2. What if the `vc` command is not recognized?**
-- Run `source ~/.bashrc` (or `~/.zshrc`) to reload your shell profile.
-- Ensure the alias was added during installation.
-
-### **3. Can I send large files?**
-- Yes, Telegram supports files up to **2GB**.
-
----
-
-## **Contributing** 🧱
-Feel free to fork this repository, submit issues, or create pull requests. Contributions are always welcome! 💡
-
----
-
-## **License** 📜
-This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.
-
----
-
-## **Connect with Me** 🌐
-- **GitHub**: [spiuwirkid](https://github.com/spiuwirkid)
-- **Instagram**: [@ddavayuste](https://instagram.com/ddavayuste_)
-- **LinkedIn**: [Dava Yuste](https://www.linkedin.com/in/dava-yuste-5b45972a6/)
-
----
-
-Made with ❤️ by **Spiuwirkid**
+All dependencies
