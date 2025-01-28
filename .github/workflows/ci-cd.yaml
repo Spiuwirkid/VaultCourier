@@ -26,28 +26,27 @@ jobs:
         run: ./vaultcourier.sh
 
       # Step 4: Save konfigurasi alias
-      - name: Source shell configuration
-        run: |
-          if [ -n "$ZSH_VERSION" ]; then
-            source ~/.zshrc
-          else
-            source ~/.bashrc
-          fi
+      - name: Source bash configuration
+        run: source ~/.bashrc
 
-      # Step 5: Buat folder testfolder untuk pengujian
+      # Step 5: Buat file testfile.txt untuk pengujian
+      - name: Create test file
+        run: echo "This is a dummy test file for VaultCourier" > testfile.txt
+
+      # Step 6: Buat folder testfolder untuk pengujian
       - name: Create test folder
         run: |
           mkdir -p testfolder
           echo "Dummy file for testing" > testfolder/dummy.txt
 
-      # Step 6: Test pengiriman file
+      # Step 7: Test pengiriman file
       - name: Test file upload
-        run: vc -f testfolder/dummy.txt
+        run: vc -f testfile.txt
         env:
           TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
           TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
 
-      # Step 7: Test pengiriman folder
+      # Step 8: Test pengiriman folder
       - name: Test folder upload
         run: vc -d testfolder
         env:
