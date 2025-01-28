@@ -25,34 +25,26 @@ jobs:
       - name: Run installation script
         run: ./vaultcourier.sh
 
-      # Step 4: Export alias vc secara manual
-      - name: Export VC alias
-        run: echo "alias vc='python3 $(pwd)/vc/vaultcourier.py'" >> ~/.bashrc
-
-      # Step 5: Buat file testfile.txt untuk pengujian
+      # Step 4: Buat file testfile.txt untuk pengujian
       - name: Create test file
         run: echo "This is a dummy test file for VaultCourier" > testfile.txt
 
-      # Step 6: Buat folder testfolder untuk pengujian
+      # Step 5: Buat folder testfolder untuk pengujian
       - name: Create test folder
         run: |
           mkdir -p testfolder
           echo "Dummy file for testing" > testfolder/dummy.txt
 
-      # Step 7: Test pengiriman file
+      # Step 6: Test pengiriman file (gunakan path langsung, bukan alias vc)
       - name: Test file upload
-        run: |
-          source ~/.bashrc
-          vc -f testfile.txt
+        run: python3 $(pwd)/vc/vaultcourier.py -f testfile.txt
         env:
           TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
           TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
 
-      # Step 8: Test pengiriman folder
+      # Step 7: Test pengiriman folder (gunakan path langsung, bukan alias vc)
       - name: Test folder upload
-        run: |
-          source ~/.bashrc
-          vc -d testfolder
+        run: python3 $(pwd)/vc/vaultcourier.py -d testfolder
         env:
           TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
           TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
