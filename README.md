@@ -212,4 +212,53 @@ VaultCourier uses the following Python libraries:
 - `python-dotenv` (for managing environment variables)
 - `colorama` (for colored terminal output)
 
-All dependencies
+All dependencies are automatically installed by the installer via `pip`.
+
+---
+
+## **File Structure** 🗂️
+Here’s what the repository looks like:
+```
+vaultcourier/
+├── vaultcourier.sh       # Installer script
+├── vc/
+│   ├── vaultcourier.py   # Main Python script
+│   └── requirements.txt  # Dependencies
+├── .env                  # Configuration file for bot token and chat ID
+```
+
+---
+
+## **FAQs** ❓
+
+### **1. What is Telegram Bot Token and Chat ID?**
+- **Telegram Bot Token**: A unique key provided by @BotFather to authenticate your bot.
+- **Chat ID**: The ID of your chat where the bot will send files. You can get it by messaging @userinfobot.
+
+### **2. What if the `vc` command is not recognized?**
+- Run `source ~/.bashrc` (or `~/.zshrc`) to reload your shell profile.
+- Ensure the alias was added during installation.
+
+### **3. Can I send large files?**
+- Yes, Telegram supports files up to **2GB**, but larger files may take longer to upload.
+
+---
+
+## **Contributing** 🧱
+Feel free to fork this repository, submit issues, or create pull requests. Contributions are always welcome! 💡
+
+---
+
+## **License** 📜
+This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.
+
+---
+
+## **Connect with Me** 🌐
+- **GitHub**: [spiuwirkid](https://github.com/spiuwirkid)
+- **Instagram**: [@ddavayuste](https://instagram.com/ddavayuste_)
+- **LinkedIn**: [Dava Yuste](https://www.linkedin.com/in/dava-yuste-5b45972a6/)
+
+---
+
+Made with ❤️ by **Spiuwirkid**
