@@ -240,7 +240,7 @@ vaultcourier/
 - Ensure the alias was added during installation.
 
 ### **3. Can I send large files?**
-- No, This script supports file up to **50MB**, cause larger files may take longer to upload.
+- No, This script supports files up to **50MB**, cause larger files may take longer to upload.
 
 ---
 
