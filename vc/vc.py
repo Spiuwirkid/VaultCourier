@@ -11,10 +11,10 @@ if not BOT_TOKEN or not CHAT_ID:
     print("\033[91m[ERROR]\033[0m TELEGRAM_BOT_TOKEN or TELEGRAM_CHAT_ID is missing. Please set it in your environment variables.")
     sys.exit(1)
 
-INFO_COLOR = "\033[94m"    
-SUCCESS_COLOR = "\033[92m" 
-ERROR_COLOR = "\033[91m"   
-RESET_COLOR = "\033[0m"   
+INFO_COLOR = "\033[94m"
+SUCCESS_COLOR = "\033[92m"
+ERROR_COLOR = "\033[91m"
+RESET_COLOR = "\033[0m"
 
 def send_telegram_message(message):
     url = f"https://api.telegram.org/bot{BOT_TOKEN}/sendMessage"
@@ -32,11 +32,14 @@ def send_file_to_telegram(file_path):
     url = f"https://api.telegram.org/bot{BOT_TOKEN}/sendDocument"
     try:
         file_name = os.path.basename(file_path)
-        message = f"Here is the file you requested:\n\n<code>{file_name}</code>"
         
-        if send_telegram_message(message):
-            print(f"{INFO_COLOR}[INFO]{RESET_COLOR} Message sent to Telegram: 'Here is the file you requested: {file_name}'")
+        # Send text message first
+        message = f"Here is the file you requested:\n\n<code>{file_name}</code>"
+        if not send_telegram_message(message):
+            print(f"{ERROR_COLOR}[ERROR]{RESET_COLOR} Failed to send initial message.")
+            return False
 
+        print(f"{INFO_COLOR}[INFO]{RESET_COLOR} File '{file_name}' is being sent to Telegram...")
         with open(file_path, "rb") as file:
             files = {"document": file}
             payload = {"chat_id": CHAT_ID}
@@ -51,13 +54,12 @@ def send_file_to_telegram(file_path):
         print(f"{ERROR_COLOR}[ERROR]{RESET_COLOR} File '{file_path}' does not exist.")
     return False
 
-
 def zip_folder(folder_path):
     try:
-        folder_name = os.path.basename(os.path.normpath(folder_path))  # Get folder name
-        zip_name = f"{folder_name}.zip"  # Create zip name based on folder name
+        folder_name = os.path.basename(os.path.normpath(folder_path))
+        zip_name = f"{folder_name}.zip"
         shutil.make_archive(folder_name, "zip", folder_path)
-        zip_path = f"{folder_name}.zip"  # Path to the generated zip file
+        zip_path = f"{folder_name}.zip"
         print(f"{INFO_COLOR}[INFO]{RESET_COLOR} Folder '{folder_path}' has been zipped into '{zip_path}'.")
         return zip_path
     except Exception as e:
@@ -68,13 +70,15 @@ def main():
     if len(sys.argv) < 3:
         print(f"""
 {INFO_COLOR}Usage:{RESET_COLOR}
-  vc -f <file_path> 
-  vc -d <folder_path> 
+  vc -f <file_path>    : Send a file to Telegram.
+  vc -d <folder_path>  : Send a folder to Telegram (auto-zipped).
 """)
         sys.exit(1)
 
     option = sys.argv[1]
     path = sys.argv[2]
+
+    print(f"{INFO_COLOR}[INFO]{RESET_COLOR} VaultCourier is starting...")
 
     if option == "-f":
         # Send file
@@ -97,11 +101,11 @@ def main():
         print(f"{ERROR_COLOR}[ERROR]{RESET_COLOR} Invalid option. Use -f for file or -d for folder.")
         sys.exit(1)
 
+    print(f"{SUCCESS_COLOR}[SUCCESS]{RESET_COLOR} VaultCourier finished its operation.")
+
 if __name__ == "__main__":
     try:
-        print(f"{INFO_COLOR}[INFO]{RESET_COLOR} VaultCourier is starting...")
         main()
-        print(f"{SUCCESS_COLOR}[SUCCESS]{RESET_COLOR} VaultCourier finished its operation.")
     except KeyboardInterrupt:
         print(f"\n{ERROR_COLOR}[CANCELLED]{RESET_COLOR} Operation cancelled by user.")
         sys.exit(0)
