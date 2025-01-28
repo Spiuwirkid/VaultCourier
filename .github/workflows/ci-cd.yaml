@@ -37,14 +37,14 @@ jobs:
 
       # Step 6: Test pengiriman file (gunakan path langsung, bukan alias vc)
       - name: Test file upload
-        run: python3 $(pwd)/vc/vaultcourier.py -f testfile.txt
+        run: python3 $(pwd)/vc/vc.py -f testfile.txt
         env:
           TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
           TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
 
       # Step 7: Test pengiriman folder (gunakan path langsung, bukan alias vc)
       - name: Test folder upload
-        run: python3 $(pwd)/vc/vaultcourier.py -d testfolder
+        run: python3 $(pwd)/vc/vc.py -d testfolder
         env:
           TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
           TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
