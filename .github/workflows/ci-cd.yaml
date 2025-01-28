@@ -33,7 +33,7 @@ jobs:
       - name: Run Linter
         run: |
           pip install flake8
-          flake8 vc/vaultcourier.py
+          flake8 vc/vc.py
 
       # Step 5: Run VaultCourier Script
       - name: Run VaultCourier
@@ -42,7 +42,7 @@ jobs:
           TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
         run: |
           echo "Running VaultCourier locally..."
-          python vc/vaultcourier.py --help
+          python vc/vc.py --help
 
       # Step 6: Dummy Test (Opsional)
       - name: Dummy Test
