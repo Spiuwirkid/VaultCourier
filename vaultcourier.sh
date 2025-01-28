@@ -84,8 +84,6 @@ echo -e "\033[92m[SUCCESS]\033[0m VaultCourier installation complete!"
 echo -e "\033[94m[INFO]\033[0m Usage examples:"
 echo -e "  vc -f <file_path>   : Send a file to Telegram."
 echo -e "  vc -d <folder_path> : Send a folder to Telegram (auto-zipped)."
-echo -e "  vc --log            : View logs."
-echo -e "  vc --status         : Check bot status."
 echo -e "  vc --help           : Show this help message."
 
 # Provide manual instruction for source command
