@@ -4,7 +4,7 @@ Welcome to **VaultCourier**, your ultimate solution for securely sending files a
 ---
 
 ## **Features** ✨
-- **Send Files:** Transfer any file to Telegram easily.
+- **Send Files:** Transfer any file to Telegram easily, including multiple files at once.
 - **Send Folders:** Automatically compress folders into `.zip` and send them seamlessly.
 - **User-Friendly:** Minimal setup with one command installation.
 - **Customizable:** Easily configure Telegram Bot Token and Chat ID.
@@ -56,7 +56,6 @@ Before installing VaultCourier, ensure you have the following installed:
 ## Screenshots
 
 ![App Screenshot](https://i.ibb.co.com/XtzdVf5/Screenshot-2025-01-27-135539.png)
-
 
 ---
 
@@ -138,6 +137,28 @@ Output:
 
 ---
 
+### **Send Multiple Files**
+```bash
+vc -f <file1> <file2> <file3>
+```
+#### Example:
+```bash
+vc -f file1.txt file2.pdf image.jpg
+```
+Output:
+```
+[INFO] VaultCourier is starting...
+[INFO] File 'file1.txt' is being sent to Telegram...
+[SUCCESS] File 'file1.txt' has been successfully sent to Telegram.
+[INFO] File 'file2.pdf' is being sent to Telegram...
+[SUCCESS] File 'file2.pdf' has been successfully sent to Telegram.
+[INFO] File 'image.jpg' is being sent to Telegram...
+[SUCCESS] File 'image.jpg' has been successfully sent to Telegram.
+[SUCCESS] VaultCourier finished its operation.
+```
+
+---
+
 ### **Send a Folder**
 ```bash
 vc -d <folder_path>
@@ -185,6 +206,9 @@ You can always update your Telegram Bot Token or Chat ID by editing your shell p
 ## **Dependencies** 📦
 VaultCourier uses the following Python libraries:
 - `requests` (for making HTTP requests to Telegram API)
+- `tqdm` (for displaying progress bars)
+- `tenacity` (for retry logic)
+- `python-dotenv` (for managing environment variables)
 
 All dependencies are automatically installed by the installer via `pip`.
 
@@ -235,4 +259,3 @@ This project is licensed under the MIT License. See the [LICENSE](LICENSE) file 
 ---
 
 Made with ❤️ by **Spiuwirkid**
-
